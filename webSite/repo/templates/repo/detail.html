@@ -1,0 +1,170 @@
+{% extends 'repo/base.html' %}
+{% block title %}{{ site }}{% endblock %}
+{% load staticfiles %}
+
+{% block body %}
+<div class="container-fluid detail-container" align="center">
+
+    <div class="row">
+
+        <!-- Left Album Info -->
+        <div class="col-sm-8 col-md-2">
+         <h3>{{ user.get_username }}'s Site</h3>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3>{{ site.site_title }}</h3>
+                     <a href="{{ site.site_url }}" class="btn btn-warning btn-sm" role="button" target="_blank">Open in a new tab</a>&nbsp;
+
+    <p></p>
+            <a href="{% url 'repo:site-update' site.id %}" class="btn btn-primary btn-sm" role="button">Update Details</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-8 col-md-4">
+         <h3>Options</h3>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                     <table class="table">
+                        <thead >
+                        <tr >
+                            <th>Search</th>
+                            <th>Add</th>
+                        </tr>
+                        </thead>
+                    <tbody>
+                    <tr>
+                        <td align="center">
+                      <p>You can search the links in the website</p>
+                   <p> <a href="{%  url 'repo:search_list_view_site'  site.id %}" class="btn btn-success btn-sm" role="button" id="search2-button" onclick="popUpX(true)" >Search</a></p>
+                        </td>
+                           <td align="center">
+                      <p>You can add the links manually</p>
+                   <p> <a href="{%  url 'repo:url-add' %}" class="btn btn-danger btn-sm" role="button" id="search2-button" onclick="popUpX(true)" >Add</a></p>
+                        </td>
+                    </tr>
+                    </tbody>
+                     </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+ {% if error %}
+     {% for item in error %}
+    <p><strong>{{ item }}</strong></p>
+    {% endfor %}
+    {% else%}
+<div class="col-sm-15 col-md-10">
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    <h3>All links</h3>
+
+                    {% if error_message %}
+                        <p><strong>{{ error_message }}</strong></p>
+                    {% endif %}
+
+                    <table class="table">
+                        <thead>
+
+                        {% if all_s %}
+                            <tr>
+                            <th>Name</th>
+                            <th>Link</th>
+                            <th>Select</th>
+                            <th>Add</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                         {% for item1,item in all_s.items %}
+                            <tr>
+                                <td>{{ item1 }}</td>
+                                <td>
+                                    <a href="{{item}}" class="btn-favorite" target="_blank"> <button type="submit" class="btn btn-success btn-sm">
+                                            <span class="glyphicon glyphicon-add">Go to website</span>&nbsp;
+                                        </button> </a>
+                                </td>
+                                <td>
+                                    <input type="checkbox" name="checkBoxUrl" value="Url">
+                                </td>
+                                <td>
+                                    <form action="{% url 'repo:add_in_site' %}" method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="url_link" value="{{ item }}" />
+                                        <input type="hidden" name="url_site" value="{{ site.id }}" />
+                                        <input type="hidden" name="url_name" value="{{ item1 }}" />
+                                        <button type="submit" class="btn btn-danger btn-xs">
+                                            <span class="glyphicon glyphicon-add"> ADD </span>&nbsp;
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                            {% else %}
+                             <tr>
+                            <th>Name</th>
+                            <th>Link</th>
+                            <th>Update</th>
+                            <th>Delete</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in site.url_set.all %}
+                            <tr>
+                                <td>{{ item.url_title }}</td>
+                                <td>
+                                    <a href="{{item.url}}" class="btn-favorite" target="_blank">  <button type="submit" class="btn btn-success btn-sm">
+                                            <span class="glyphicon glyphicon-add">Go to {{item.url}} </span>&nbsp;
+                                        </button> </a>
+                                </td>
+                                <td>
+                                 <form action="{% url 'repo:urlupdate' item.id%}" method="post" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="album_id" value="{{ item.id }}" />
+                                <button type="submit" class="btn btn-default btn-sm">
+                                    <span class="glyphicon glyphicon-pencil"> Update Details</span>
+                                </button>
+                            </form>
+                                </td>
+                            <!-- Delete Album -->
+                                <td>
+                            <form action="{% url 'repo:urldelete' item.id%}" method="post" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="album_id" value="{{ item.id }}" />
+                                <button type="submit" class="btn btn-default btn-sm" onclick="return confirm('Are you sure you want to delete this item?');">
+                                    <span class="glyphicon glyphicon-trash"> Delete</span>
+                                </button>
+                            </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                            </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+    {% endif %}
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+                        <script src="{% static 'repo/scripts/jquery.plainoverlay.js' %}"></script>
+                        <script>
+                            progress = $('<div id="demo-1"><h1 align="center">Searching...</h1><img src="https://www.crealogica.com/images/animat-rocket.gif"  width="500px" height="500px"/></div>');
+                            function popUpX(isOpened) {
+                                if (isOpened) {
+                                    $('body').plainOverlay('show', {fillColor:'#000',progress: function() { return progress; }});
+                                    setTimeout(function() { $('body').plainOverlay('hide'); }, 25000);
+                                    $(this).text('Search');
+                                } else {
+                                    $('body').plainOverlay('hide', {fillColor:'#000',progress: function() { return progress; }});
+                                    $(this).text('Search');
+                                }
+
+                            }
+                        </script>
+
+{% endblock %}

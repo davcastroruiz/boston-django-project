@@ -1,0 +1,61 @@
+{% extends 'repo/base.html' %}
+
+{% block body %}
+
+<div class="albums-container container-fluid">
+     <div class="col-sm-12">
+              {% if user.get_username %}
+            <h3>Welcome, {{ user.get_username }}</h3>
+            {% else %}
+               <h3> Search links in an external website </h3>
+            {% endif %}
+        </div>
+ <!-- Right Song Info -->
+        <div class="col-sm-12 col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    <h3>All links</h3>
+
+                    {% if error_message %}
+                        <p><strong>{{ error_message }}</strong></p>
+                    {% endif %}
+
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Link</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                         {% for item1,item in all_s.items %}
+                            <tr>
+                                <td>{{ item1 }}</td>
+                                <td>
+                                    <a href="http://{{item}}" class="btn-favorite" target="_blank">  <button type="submit" class="btn btn-success btn-sm">
+                                            <span class="glyphicon glyphicon-add"> Go to {{item}} </span>&nbsp;
+                                        </button> </a>
+                                </td>
+                                <td>
+                                    <form action="#" method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-xs">
+                                            <span class="glyphicon glyphicon-add"> ADD (death link)</span>&nbsp;
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+{% endblock %}

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+{% block title %}Home
+{% endblock %}</title>
+    {% load staticfiles %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Tangerine">
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" ></script>
+<link rel="stylesheet" type="text/css" href="{% static 'music/style.css' %}">
+</head>
+<body>
+ <nav class = "navbar navbar-inverse">
+    <div class="container-fluid">
+        <!--    Header -->
+        <div class = "navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#topNavBar">
+        <span class = "icon-bar"></span>
+        <span class = "icon-bar"></span>
+        <span class = "icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{% url 'music:index' %}"> Home </a>
+        </div>
+        <!--    Items -->
+        <div class="collapse navbar-collapse" id="topNavBar">
+
+            <ul class="nav navbar-nav">
+                <li class="{% block albums_active %}{% endblock %}">
+                    <a href="{% url 'music:index' %}">
+                        <span class="glyphicon glyphicon-cd" aria-hidden="true"></span>&nbsp;Albums
+                    </a>
+                </li>
+                 <li class="{% block songs_active %}{% endblock %}">
+                    <a href="{% url 'music:songs' %}">
+                        <span class="glyphicon glyphicon-music" aria-hidden="true"></span>&nbsp;Songs
+                    </a>
+                </li>
+                <li class="">
+                    <a href="{% url 'repo:index' %}">
+                        <span class="glyphicon glyphicon-road" aria-hidden="true"></span>&nbsp;Repo
+                    </a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                 <li class="{% block add_albums_active %}{% endblock %}">
+                    <a href="{% url 'music:album-add' %}">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Add Album
+                    </a>
+                </li>
+            {% if request.user.is_authenticated %}
+                  <li class="">
+                      <a href="{% url 'logout' %}">
+                    <span class="glyphicon glyphicon-off" aria-hidden="true"></span>&nbsp; Logout
+                    </a>
+                </li>
+            {% else %}
+                 <li class="">
+                      <a href="{% url 'login' %}">
+                    <span class="glyphicon glyphicon-off" aria-hidden="true"></span>&nbsp; Login
+                    </a>
+                </li>
+            {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+{% block body %}
+{% endblock %}
+</body>
+</html>

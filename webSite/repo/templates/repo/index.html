@@ -1,0 +1,50 @@
+{% extends 'repo/base.html' %}
+
+{% block body %}
+<div class="albums-container container-fluid">
+<div class="row">
+        <div class="col-sm-12">
+            {% if user.get_username %}
+            <h3>Welcome, {{ user.get_username }}</h3>
+            {% else %}
+               <h3>Please Login first, you don't allow it to be here.</h3>
+            {% endif %}
+
+        </div>
+{% if all_s %}
+            {% for type in all_s %}
+                <div class="col-sm-4 col-lg-2">
+                    <div class="thumbnail">
+                        <div class="caption">
+
+                            <h4>{{ type.site_title }}</h4>
+
+                            <!-- View Details -->
+                            <a href="{% url 'repo:detail' type.id %}" class="btn btn-primary btn-sm" role="button">View Details</a>
+
+                            <!-- Delete Album -->
+                            <form action="{% url 'repo:type-delete'  type.id %}" method="post" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="album_id" value="{{ type.id }}" />
+                                <button type="submit" class="btn btn-default btn-sm" onclick="return confirm('Are you sure you want to delete this item?');">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            {% endfor %}
+        {% else %}
+            <div class="col-sm-12">
+                <br>
+                <a href="{% url 'repo:site-add' %}">
+                    <button type="button" class="btn btn-success">
+                        <span class="glyphicon glyphicon-plus"></span>&nbsp; Add a new Site
+                    </button>
+                </a>
+            </div>
+        {% endif %}
+</div>
+</div>
+{% endblock %}
